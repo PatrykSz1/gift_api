@@ -19,6 +19,7 @@ import java.util.List;
 @Setter
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public class Kid {
 
     @Id
@@ -28,6 +29,11 @@ public class Kid {
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
+
+    @Version
+    private int version;
+
+//    TODO dodaj kolumne do bazy
 
     @OneToMany(mappedBy = "kid", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Gift> gifts = new ArrayList<>();

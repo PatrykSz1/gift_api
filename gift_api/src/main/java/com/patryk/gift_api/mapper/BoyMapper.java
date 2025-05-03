@@ -1,27 +1,31 @@
 package com.patryk.gift_api.mapper;
 
 import com.patryk.gift_api.model.Boy;
-import com.patryk.gift_api.model.command.CreateBoyCommand;
-import com.patryk.gift_api.model.dto.KidDto;
+import com.patryk.gift_api.model.command.CreateKidCommand;
+import com.patryk.gift_api.model.dto.BoyDto;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
 
 @Component
 public class BoyMapper {
 
-    public static Boy mapFromCommand(CreateBoyCommand command) {
+    public Boy mapFromCommand(CreateKidCommand command) {
         return Boy.builder()
-                .firstName(command.getFirstName())
-                .lastName(command.getLastName())
-                .birthDate(command.getBirthDate())
-                .colorOfShirt(command.getColorOfShirt())
+                .firstName(command.getParams().get("firstName"))
+                .lastName(command.getParams().get("lastName"))
+                .birthDate(LocalDate.parse(command.getParams().get("birthDate")))
+                .colorOfShirt(command.getParams().get("colorOfShirt"))
                 .build();
     }
 
-    public static KidDto mapFromEntityToDto(Boy boy) {
-        return KidDto.builder()
+    public BoyDto mapFromEntityToDto(Boy boy) {
+        return BoyDto.builder()
+                .type(boy.getClass().getSimpleName())
                 .firstName(boy.getFirstName())
                 .lastName(boy.getLastName())
                 .birthDate(boy.getBirthDate())
+                .colorOfShirt(boy.getColorOfShirt())
                 .build();
     }
 }

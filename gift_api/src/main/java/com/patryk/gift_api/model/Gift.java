@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @Builder
 @Entity
+@ToString(exclude = "kid")
 public class Gift {
 
     @Id
@@ -19,6 +20,9 @@ public class Gift {
 
     private String name;
     private BigDecimal price;
+
+    @Version
+    private int version;
 
     @ManyToOne
     @JoinColumn(name = "kid_id", nullable = false)

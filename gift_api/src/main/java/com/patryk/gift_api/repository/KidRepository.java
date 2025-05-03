@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface KidRepository extends JpaRepository<Kid, Long> {
+public interface KidRepository extends JpaRepository<Kid, Integer> {
     @Query("select distinct c from Kid c " +
             "join fetch c.gifts g " +
             "where g.price > :price")
