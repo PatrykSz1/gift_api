@@ -9,4 +9,8 @@ public interface KidOperations {
     Kid create(CreateKidCommand command);
 
     KidDto mapToDto(Kid kid);
+
+    String getInsertQuery();
+
+    String formatParams(String[] data);
 }

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("api/v1/imports")
 @RequiredArgsConstructor
@@ -22,25 +24,23 @@ public class ImportController {
     private final GiftLoader giftLoader;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadCsv(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Map<String, String>> uploadCsv(@RequestParam("file") MultipartFile file) {
         try {
             importService.upload(file);
-            return ResponseEntity.ok("File uploaded and processed successfully.");
+            return ResponseEntity.ok(Map.of("message", "File uploaded and processed successfully."));
         } catch (IllegalArgumentException e) {
             log.warn("Upload failed: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             log.error("Unexpected error during file upload", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An unexpected error occurred. Please try again later.");
+                    .body(Map.of("error", "An unexpected error occurred. Please try again later."));
         }
     }
 
     @PostMapping("/generate")
-    public ResponseEntity<String> generateKids(@RequestParam int totalGifts) {
+    public ResponseEntity<Map<String, String>> generateKids(@RequestParam int totalGifts) {
         giftLoader.loadGifts(totalGifts);
-        return ResponseEntity.ok("Kids generation started for " + totalGifts + " kids.");
+        return ResponseEntity.ok(Map.of("message", "Kids generation started for " + totalGifts + " kids."));
     }
-
-    //TODO string
 }

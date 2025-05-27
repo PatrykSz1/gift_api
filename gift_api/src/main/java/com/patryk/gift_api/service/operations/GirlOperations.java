@@ -13,7 +13,23 @@ import org.springframework.stereotype.Component;
 public class GirlOperations implements KidOperations {
 
     private final GirlMapper girlMapper;
+//    private static final String INSERT_QUERY = "INSERT INTO kid(DTYPE, FIRST_NAME, LAST_NAME, BIRTH_DATE,COLOR_OF_DRESS) VALUES %s";
 
+    @Override
+    public String getInsertQuery() {
+        return "INSERT INTO kid(DTYPE, FIRST_NAME, LAST_NAME, BIRTH_DATE, COLOR_OF_DRESS, VERSION) VALUES %s";
+    }
+    @Override
+    public String formatParams(String[] data) {
+        return String.format("('%s','%s','%s','%s','%s', %d),",
+                data[0],
+                data[1],
+                data[2],
+                data[3],
+                data[4],
+                0
+        );
+    }
     @Override
     public Kid create(CreateKidCommand createKidCommand) {
         return GirlMapper.mapFromCommand(createKidCommand);

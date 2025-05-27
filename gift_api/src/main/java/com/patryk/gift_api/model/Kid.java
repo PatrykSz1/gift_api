@@ -33,8 +33,6 @@ public class Kid {
     @Version
     private int version;
 
-//    TODO dodaj kolumne do bazy
-
     @OneToMany(mappedBy = "kid", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Gift> gifts = new ArrayList<>();
 }

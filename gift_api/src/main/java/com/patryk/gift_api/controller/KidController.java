@@ -1,13 +1,12 @@
 package com.patryk.gift_api.controller;
 
-import com.patryk.gift_api.model.Kid;
 import com.patryk.gift_api.model.command.CreateGiftCommand;
 import com.patryk.gift_api.model.command.CreateKidCommand;
 import com.patryk.gift_api.model.command.UpdateGiftCommand;
 import com.patryk.gift_api.model.command.UpdateKidCommand;
 import com.patryk.gift_api.model.dto.GiftDto;
 import com.patryk.gift_api.model.dto.KidDto;
-import com.patryk.gift_api.model.dto.SearchRequest;
+import com.patryk.gift_api.model.dto.SearchCriteria;
 import com.patryk.gift_api.service.GiftService;
 import com.patryk.gift_api.service.KidSearchService;
 import com.patryk.gift_api.service.KidService;
@@ -38,12 +37,9 @@ public class KidController {
         return new ResponseEntity<>(kidService.getAllKids(), HttpStatus.OK);
     }
 
-    //TODO paginacja
-
-
     @PostMapping("/search")
-    public ResponseEntity<List<KidDto>> searchKids(@RequestBody SearchRequest searchRequest) {
-        return new ResponseEntity<>(kidSearchService.searchKids(searchRequest), HttpStatus.OK);
+    public ResponseEntity<List<KidDto>> searchKids(@RequestBody List<SearchCriteria> searchCriteria) {
+        return ResponseEntity.ok(kidSearchService.search(searchCriteria));
     }
 
 //    @GetMapping("/search")
