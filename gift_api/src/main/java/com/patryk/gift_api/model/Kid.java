@@ -20,7 +20,7 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
-public class Kid {
+public class Kid implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +33,15 @@ public class Kid {
     @Version
     private int version;
 
-    @OneToMany(mappedBy = "kid", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "kid", orphanRemoval = true)
     private List<Gift> gifts = new ArrayList<>();
+
+    @Override
+    public Kid clone() {
+        try {
+            return (Kid) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("error while cloning Kid", e);
+        }
+    }
 }

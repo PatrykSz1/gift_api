@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class ImportService {
             while ((line = bufferedReader.readLine()) != null) {
                 String[] data = line.split(",");
                 String dtype = data[0].toUpperCase();
-                List<String[]> elements = childrenData.get(dtype);
+                List<String[]> elements = childrenData.computeIfAbsent(dtype, e -> new ArrayList<>());
                 elements.add(data);
                 if (elements.size() % BATCH_SIZE == 0) {
                     KidOperations kidOperations = kidOperationsMap.get(dtype);

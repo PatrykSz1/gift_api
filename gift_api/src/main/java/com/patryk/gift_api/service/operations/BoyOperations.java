@@ -18,12 +18,12 @@ public class BoyOperations implements KidOperations {
 
     @Override
     public String getInsertQuery() {
-        return "INSERT INTO kid(DTYPE, FIRST_NAME, LAST_NAME, BIRTH_DATE, COLOR_OF_SHIRT, VERSION) VALUES %s";
+        return "INSERT INTO kid (DTYPE, FIRST_NAME, LAST_NAME, BIRTH_DATE, COLOR_OF_SHIRT, VERSION) VALUES %s";
     }
 
     @Override
     public String formatParams(String[] data) {
-        return String.format("('%s','%s','%s','%s','%s', %d),",
+        return String.format("(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%d\"),",
                 data[0],
                 data[1],
                 data[2],

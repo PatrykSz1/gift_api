@@ -8,10 +8,11 @@ import com.patryk.gift_api.model.dto.KidDto;
 import com.patryk.gift_api.repository.KidRepository;
 import com.patryk.gift_api.service.operations.KidOperations;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.OptimisticLockException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -39,11 +40,11 @@ public class KidService {
         return kidOperations.mapToDto(kid);
     }
 
-    public List<KidDto> getAllKids() {
-        return kidRepository.findAll().stream()
-                .map(kidMapper::mapFromEntityToDto)
-                .toList();
+    public Page<KidDto> getAllKids(Pageable pageable) {
+        return kidRepository.findAll(pageable)
+                .map(kidMapper::mapFromEntityToDto);
     }
+
     public KidDto getKidById(int kidId) {
         Kid kid = kidRepository.findById(kidId)
                 .orElseThrow(() -> new EntityNotFoundException(KID_NOT_FOUND_MESSAGE + kidId));
@@ -55,23 +56,22 @@ public class KidService {
         Kid existingKid = kidRepository.findById(kidId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono Kida o ID: " + kidId));
 
-        if (existingKid.getVersion() != command.getVersion()) {
-            throw new OptimisticLockException("Obiekt został zmieniony przez innego użytkownika.");
-        }
+        Kid toSave = existingKid.clone();
+//        TODO mapper
+        toSave.setFirstName(command.getFirstName());
+        toSave.setLastName(command.getLastName());
+        toSave.setBirthDate(command.getBirthDate());
+        toSave.setVersion(command.getVersion());
 
-        existingKid.setFirstName(command.getFirstName());
-        existingKid.setLastName(command.getLastName());
-        existingKid.setBirthDate(command.getBirthDate());
+        kidRepository.save(toSave);
 
-        kidRepository.save(existingKid);
-
-        return kidMapper.mapFromEntityToDto(existingKid);
+        return kidMapper.mapFromEntityToDto(toSave);
     }
 
 
     public void deleteKid(int kidId) {
         if (!kidRepository.existsById(kidId)) {
-            throw new IllegalArgumentException(KID_NOT_FOUND_MESSAGE+ kidId);
+            throw new IllegalArgumentException(KID_NOT_FOUND_MESSAGE + kidId);
         }
         kidRepository.deleteById(kidId);
     }

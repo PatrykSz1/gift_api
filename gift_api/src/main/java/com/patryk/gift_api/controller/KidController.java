@@ -11,6 +11,9 @@ import com.patryk.gift_api.service.GiftService;
 import com.patryk.gift_api.service.KidSearchService;
 import com.patryk.gift_api.service.KidService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,13 +36,14 @@ public class KidController {
     }
 
     @GetMapping
-    public ResponseEntity<List<KidDto>> getAllKids() {
-        return new ResponseEntity<>(kidService.getAllKids(), HttpStatus.OK);
+    public ResponseEntity<Page<KidDto>> getAllKids(@PageableDefault(size = 10, sort = "id")Pageable pageable) {
+        return new ResponseEntity<>(kidService.getAllKids(pageable), HttpStatus.OK);
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<KidDto>> searchKids(@RequestBody List<SearchCriteria> searchCriteria) {
-        return ResponseEntity.ok(kidSearchService.search(searchCriteria));
+    public ResponseEntity<Page<KidDto>> searchKids(@PageableDefault (size = 10, sort = "id")Pageable pageable,
+                                                       @RequestBody List<SearchCriteria> searchCriteria) {
+        return ResponseEntity.ok(kidSearchService.search(pageable,searchCriteria));
     }
 
 //    @GetMapping("/search")

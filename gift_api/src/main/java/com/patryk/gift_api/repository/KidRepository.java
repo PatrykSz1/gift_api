@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @Repository
 public interface KidRepository extends JpaRepository<Kid, Integer>, JpaSpecificationExecutor<Kid> {
+
     @Query("select distinct c from Kid c " +
             "join fetch c.gifts g " +
             "where g.price > :price")
@@ -25,6 +26,8 @@ public interface KidRepository extends JpaRepository<Kid, Integer>, JpaSpecifica
 
     @Query("SELECT k FROM Kid k WHERE SIZE(k.gifts) >= :min AND SIZE(k.gifts) <= :max")
     List<Kid> findByGiftCountBetween(@Param("min") int min, @Param("max") int max);
+
+
 
 //    List<Kid> findKidsByGiftPrice
 //    @Query("SELECT k FROM Kid k JOIN k.gifts g WHERE g.price > :price")

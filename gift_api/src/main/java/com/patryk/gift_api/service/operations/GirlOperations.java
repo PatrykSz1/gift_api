@@ -21,7 +21,7 @@ public class GirlOperations implements KidOperations {
     }
     @Override
     public String formatParams(String[] data) {
-        return String.format("('%s','%s','%s','%s','%s', %d),",
+        return String.format("(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%d\"),",
                 data[0],
                 data[1],
                 data[2],

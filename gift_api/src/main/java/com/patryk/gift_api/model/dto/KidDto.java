@@ -15,8 +15,10 @@ import java.time.LocalDate;
 @SuperBuilder
 public class KidDto {
 
+    private int id;
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
     private String type;
+    private int version;
 }
