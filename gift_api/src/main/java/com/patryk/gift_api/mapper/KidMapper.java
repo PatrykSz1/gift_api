@@ -22,9 +22,11 @@ public class KidMapper {
 
     public KidDto mapFromEntityToDto(Kid kid){
         return KidDto.builder()
+                .id(kid.getId())
                 .firstName(kid.getFirstName())
                 .lastName(kid.getLastName())
                 .birthDate(kid.getBirthDate())
+                .version(kid.getVersion())
                 .build();
     }
 }

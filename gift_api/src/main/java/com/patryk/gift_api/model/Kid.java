@@ -19,7 +19,8 @@ import java.util.List;
 @Setter
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class Kid {
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
+public class Kid implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +30,18 @@ public class Kid {
     private String lastName;
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "kid", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Version
+    private int version;
+
+    @OneToMany(mappedBy = "kid", orphanRemoval = true)
     private List<Gift> gifts = new ArrayList<>();
+
+    @Override
+    public Kid clone() {
+        try {
+            return (Kid) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("error while cloning Kid", e);
+        }
+    }
 }

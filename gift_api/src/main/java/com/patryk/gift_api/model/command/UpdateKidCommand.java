@@ -15,4 +15,5 @@ public class UpdateKidCommand {
     private String lastName;
     private LocalDate birthDate;
     private String gender;
+    private int version;
 }

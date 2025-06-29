@@ -2,11 +2,18 @@ package com.patryk.gift_api.controller;
 
 import com.patryk.gift_api.model.command.CreateGiftCommand;
 import com.patryk.gift_api.model.command.CreateKidCommand;
+import com.patryk.gift_api.model.command.UpdateGiftCommand;
+import com.patryk.gift_api.model.command.UpdateKidCommand;
 import com.patryk.gift_api.model.dto.GiftDto;
 import com.patryk.gift_api.model.dto.KidDto;
+import com.patryk.gift_api.model.dto.SearchCriteria;
 import com.patryk.gift_api.service.GiftService;
+import com.patryk.gift_api.service.KidSearchService;
 import com.patryk.gift_api.service.KidService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +27,8 @@ public class KidController {
 
     private final KidService kidService;
     private final GiftService giftService;
+    private final KidSearchService kidSearchService;
+
 
     @PostMapping
     public ResponseEntity<KidDto> addKid(@RequestBody CreateKidCommand createKidCommand) {
@@ -27,9 +36,21 @@ public class KidController {
     }
 
     @GetMapping
-    public ResponseEntity<List<KidDto>> getAllKids() {
-        return new ResponseEntity<>(kidService.getAllKids(), HttpStatus.OK);
+    public ResponseEntity<Page<KidDto>> getAllKids(@PageableDefault(size = 10, sort = "id")Pageable pageable) {
+        return new ResponseEntity<>(kidService.getAllKids(pageable), HttpStatus.OK);
     }
+
+    @PostMapping("/search")
+    public ResponseEntity<Page<KidDto>> searchKids(@PageableDefault (size = 10, sort = "id")Pageable pageable,
+                                                       @RequestBody List<SearchCriteria> searchCriteria) {
+        return ResponseEntity.ok(kidSearchService.search(pageable,searchCriteria));
+    }
+
+//    @GetMapping("/search")
+//    public ResponseEntity<List<KidDto>> searchKids(@RequestParam(required = false) String name,
+//                                                   @RequestParam(required = false) String gift) {
+//        return new ResponseEntity<>(kidSearchService.searchKids(name, gift), HttpStatus.OK);
+//    }
 
     @GetMapping("/{kidId}")
     public ResponseEntity<KidDto> getKidById(@PathVariable int kidId) {
@@ -38,8 +59,8 @@ public class KidController {
 
     @PutMapping("/{kidId}")
     public ResponseEntity<KidDto> updateKid(@PathVariable int kidId,
-                                            @RequestBody CreateKidCommand createKidCommand) {
-        return new ResponseEntity<>(kidService.updateKid(kidId, createKidCommand), HttpStatus.OK);
+                                            @RequestBody UpdateKidCommand updateKidCommand) {
+        return new ResponseEntity<>(kidService.updateKid(updateKidCommand, kidId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{kidId}")
@@ -62,12 +83,12 @@ public class KidController {
     @PutMapping("/{kidId}/gifts/{giftId}")
     public ResponseEntity<GiftDto> updateGiftForKid(@PathVariable int kidId,
                                                     @PathVariable int giftId,
-                                                    @RequestBody CreateGiftCommand updateGiftCommand) {
+                                                    @RequestBody UpdateGiftCommand updateGiftCommand) {
         return new ResponseEntity<>(giftService.updateGiftForKid(kidId, giftId, updateGiftCommand), HttpStatus.OK);
     }
 
     @DeleteMapping("/{kidId}/gifts/{giftId}")
-    public ResponseEntity<Void> deleteGift(@PathVariable int kidId, @PathVariable int giftId) {
+    public ResponseEntity<Void> deleteGift(@PathVariable int giftId) {
         giftService.deleteGift(giftId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

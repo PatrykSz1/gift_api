@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface GiftRepository extends JpaRepository<Gift, Long> {
+public interface GiftRepository extends JpaRepository<Gift, Integer> {
     List<Gift> findByKidId(int kidId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

@@ -3,6 +3,7 @@ package com.patryk.gift_api.service;
 import com.patryk.gift_api.model.Gift;
 import com.patryk.gift_api.model.Kid;
 import com.patryk.gift_api.model.command.CreateGiftCommand;
+import com.patryk.gift_api.model.command.UpdateGiftCommand;
 import com.patryk.gift_api.model.dto.GiftDto;
 import com.patryk.gift_api.repository.GiftRepository;
 import com.patryk.gift_api.repository.KidRepository;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class GiftService {
 
     @Transactional
     public GiftDto addGiftToKid(CreateGiftCommand createGiftCommand, int kidId) {
-        Kid kid = kidRepository.findById((long) kidId)
+        Kid kid = kidRepository.findById(kidId)
                 .orElseThrow(() -> new IllegalArgumentException("Kid with ID " + kidId + " not found"));
 
         Gift gift = Gift.builder()
@@ -35,16 +35,15 @@ public class GiftService {
         gift = giftRepository.save(gift);
         return mapToDto(gift);
     }
-
     public List<GiftDto> getGiftsByKidId(int kidId) {
         List<Gift> gifts = giftRepository.findByKidId(kidId);
         return gifts.stream()
                 .map(this::mapToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
-    public GiftDto updateGiftForKid(int kidId, int giftId, CreateGiftCommand updateGiftCommand) {
+    public GiftDto updateGiftForKid(int kidId, int giftId, UpdateGiftCommand updateGiftCommand) {
         Gift gift = giftRepository.findByIdAndKidId(giftId, kidId)
                 .orElseThrow(() -> new IllegalArgumentException("Gift with ID " + giftId + " not found for Kid ID " + kidId));
 
@@ -57,10 +56,10 @@ public class GiftService {
 
     @Transactional
     public void deleteGift(int giftId) {
-        if (!giftRepository.existsById((long) giftId)) {
+        if (!giftRepository.existsById(giftId)) {
             throw new IllegalArgumentException("Gift with ID " + giftId + " not found");
         }
-        giftRepository.deleteById((long) giftId);
+        giftRepository.deleteById(giftId);
     }
 
     private GiftDto mapToDto(Gift gift) {
