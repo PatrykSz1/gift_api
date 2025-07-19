@@ -2,15 +2,19 @@ package com.patryk.gift_api.service;
 
 import com.patryk.gift_api.mapper.KidMapper;
 import com.patryk.gift_api.model.Kid;
+import com.patryk.gift_api.model.KidView;
 import com.patryk.gift_api.model.command.CreateKidCommand;
 import com.patryk.gift_api.model.command.UpdateKidCommand;
 import com.patryk.gift_api.model.dto.KidDto;
+import com.patryk.gift_api.model.dto.SearchCriteria;
 import com.patryk.gift_api.repository.KidRepository;
+import com.patryk.gift_api.repository.KidViewRepository;
 import com.patryk.gift_api.service.operations.KidOperations;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +27,7 @@ public class KidService {
 
     private final Map<String, KidOperations> kidOperationsMap;
     private final KidRepository kidRepository;
+    private final KidViewRepository kidViewRepository;
     private final KidMapper kidMapper;
     private static final String KID_NOT_FOUND_MESSAGE = "Kid not found with ID: ";
 
@@ -40,15 +45,19 @@ public class KidService {
         return kidOperations.mapToDto(kid);
     }
 
-    public Page<KidDto> getAllKids(Pageable pageable) {
-        return kidRepository.findAll(pageable)
-                .map(kidMapper::mapFromEntityToDto);
+    public Page<KidDto> search(Pageable pageable, List<SearchCriteria> params) {
+        Specification<KidView> spec = Specification.where(null);
+        for (SearchCriteria param : params) {
+            spec = spec.and(new KidSpecification(param));
+        }
+        return kidViewRepository.findAll(spec, pageable)
+                .map(kidMapper::mapToDto);
     }
 
     public KidDto getKidById(int kidId) {
         Kid kid = kidRepository.findById(kidId)
                 .orElseThrow(() -> new EntityNotFoundException(KID_NOT_FOUND_MESSAGE + kidId));
-        return kidMapper.mapFromEntityToDto(kid);
+        return kidMapper.mapToDto(kid);
     }
 
     @Transactional
@@ -56,16 +65,11 @@ public class KidService {
         Kid existingKid = kidRepository.findById(kidId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono Kida o ID: " + kidId));
 
-        Kid toSave = existingKid.clone();
-//        TODO mapper
-        toSave.setFirstName(command.getFirstName());
-        toSave.setLastName(command.getLastName());
-        toSave.setBirthDate(command.getBirthDate());
-        toSave.setVersion(command.getVersion());
 
+        Kid toSave = kidMapper.mapForUpdate(existingKid, command);
         kidRepository.save(toSave);
 
-        return kidMapper.mapFromEntityToDto(toSave);
+        return kidMapper.mapToDto(toSave);
     }
 
 

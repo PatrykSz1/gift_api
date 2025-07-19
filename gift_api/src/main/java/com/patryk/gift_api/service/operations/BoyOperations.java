@@ -23,12 +23,13 @@ public class BoyOperations implements KidOperations {
 
     @Override
     public String formatParams(String[] data) {
-        return String.format("(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%d\"),",
+        String color = data[4].isBlank() ? "null" : "\"" + data[4] + "\"";
+        return String.format("('%s','%s','%s','%s',%s,%d),",
                 data[0],
                 data[1],
                 data[2],
                 data[3],
-                data[4],
+                color,
                 0
         );
     }

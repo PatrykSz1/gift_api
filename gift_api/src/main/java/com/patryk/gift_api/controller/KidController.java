@@ -8,7 +8,6 @@ import com.patryk.gift_api.model.dto.GiftDto;
 import com.patryk.gift_api.model.dto.KidDto;
 import com.patryk.gift_api.model.dto.SearchCriteria;
 import com.patryk.gift_api.service.GiftService;
-import com.patryk.gift_api.service.KidSearchService;
 import com.patryk.gift_api.service.KidService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,30 +26,17 @@ public class KidController {
 
     private final KidService kidService;
     private final GiftService giftService;
-    private final KidSearchService kidSearchService;
-
 
     @PostMapping
     public ResponseEntity<KidDto> addKid(@RequestBody CreateKidCommand createKidCommand) {
         return new ResponseEntity<>(kidService.addKid(createKidCommand), HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<KidDto>> getAllKids(@PageableDefault(size = 10, sort = "id")Pageable pageable) {
-        return new ResponseEntity<>(kidService.getAllKids(pageable), HttpStatus.OK);
-    }
-
     @PostMapping("/search")
-    public ResponseEntity<Page<KidDto>> searchKids(@PageableDefault (size = 10, sort = "id")Pageable pageable,
-                                                       @RequestBody List<SearchCriteria> searchCriteria) {
-        return ResponseEntity.ok(kidSearchService.search(pageable,searchCriteria));
+    public ResponseEntity<Page<KidDto>> searchKids(@PageableDefault(sort = "id") Pageable pageable,
+                                                   @RequestBody List<SearchCriteria> searchCriteria) {
+        return ResponseEntity.ok(kidService.search(pageable, searchCriteria));
     }
-
-//    @GetMapping("/search")
-//    public ResponseEntity<List<KidDto>> searchKids(@RequestParam(required = false) String name,
-//                                                   @RequestParam(required = false) String gift) {
-//        return new ResponseEntity<>(kidSearchService.searchKids(name, gift), HttpStatus.OK);
-//    }
 
     @GetMapping("/{kidId}")
     public ResponseEntity<KidDto> getKidById(@PathVariable int kidId) {

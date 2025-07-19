@@ -21,6 +21,7 @@ public class BoyMapper {
 
     public BoyDto mapFromEntityToDto(Boy boy) {
         return BoyDto.builder()
+                .id(boy.getId())
                 .type(boy.getClass().getSimpleName())
                 .firstName(boy.getFirstName())
                 .lastName(boy.getLastName())

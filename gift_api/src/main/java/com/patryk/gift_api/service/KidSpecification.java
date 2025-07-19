@@ -1,6 +1,7 @@
 package com.patryk.gift_api.service;
 
 import com.patryk.gift_api.model.Kid;
+import com.patryk.gift_api.model.KidView;
 import com.patryk.gift_api.model.dto.SearchCriteria;
 import jakarta.persistence.criteria.*;
 import lombok.AllArgsConstructor;
@@ -9,12 +10,12 @@ import org.springframework.data.jpa.domain.Specification;
 
 @Data
 @AllArgsConstructor
-public class KidSpecification implements Specification<Kid> {
+public class KidSpecification implements Specification<KidView> {
 
     private final SearchCriteria searchCriteria;
 
     @Override
-    public Predicate toPredicate(Root<Kid> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+    public Predicate toPredicate(Root<KidView> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
         Path<?> path = root.get(searchCriteria.getKey());
         Object value = searchCriteria.getValue();
 

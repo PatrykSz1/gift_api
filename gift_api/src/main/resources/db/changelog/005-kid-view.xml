@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="kid-view" author="admin">
+        <sql>
+            <![CDATA[
+                CREATE OR REPLACE VIEW kid_view AS
+                SELECT
+                    k.id AS id,
+                    k.dtype AS dtype,
+                    k.first_name AS first_name,
+                    k.last_name AS last_name,
+                    k.birth_date AS birth_date,
+                    k.color_of_shirt AS color_of_shirt,
+                    k.color_of_dress AS color_of_dress,
+                    COUNT(g.id) AS gift_count
+                FROM
+                    kid k
+                    LEFT JOIN
+                    gift g ON g.kid_id = k.id
+                GROUP BY
+                    k.id
+            ]]>
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

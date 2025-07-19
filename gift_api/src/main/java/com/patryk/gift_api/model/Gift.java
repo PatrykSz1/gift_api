@@ -21,9 +21,6 @@ public class Gift {
     private String name;
     private BigDecimal price;
 
-    @Version
-    private int version;
-
     @ManyToOne
     @JoinColumn(name = "kid_id", nullable = false)
     private Kid kid;

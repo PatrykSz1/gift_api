@@ -10,8 +10,3 @@ public class SearchCriteria {
     private Object value;
 }
 
-//    private String firstName;
-//    private String lastName;
-//    private LocalDate birthDate;
-//    private Integer minGifts;
-//    private Integer maxGifts;

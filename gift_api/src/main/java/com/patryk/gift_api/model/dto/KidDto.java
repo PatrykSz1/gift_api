@@ -21,4 +21,5 @@ public class KidDto {
     private LocalDate birthDate;
     private String type;
     private int version;
+    private int giftCount;
 }
