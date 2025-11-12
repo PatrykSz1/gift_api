@@ -1,0 +1,1 @@
+Gift Parcel Management API — A Spring Boot–based REST application for managing customers, parcels, and items. The system enables creating and tracking parcel contents, linking them to specific customers, and maintaining data consistency through layered architecture and clean domain modeling (Java, Spring Boot, Hibernate, REST API, Maven).
